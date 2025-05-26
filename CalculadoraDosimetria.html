@@ -1,462 +1,163 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Calculadora de Dosimetria Penal Avançada</title>
-<style>
-  /* Reset básico e fontes */
-  * {
-    box-sizing: border-box;
-  }
-  body {
-    margin: 0;
-    padding: 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    display: flex;
-    justify-content: center;
-    transition: background-color 0.3s, color 0.3s;
-  }
-
-  /* Variáveis para temas */
-  :root {
-    --bg-color: #121212;
-    --text-color: white;
-    --bg-container: #1f1f1f;
-    --input-bg: #2e2e2e;
-    --btn-bg: #0f9d58;
-    --btn-hover: #33b67a;
-    --error-color: #ff6b6b;
-    --highlight-color: #00ff7f;
-  }
-  body.light {
-    --bg-color: #fefefe;
-    --text-color: #222;
-    --bg-container: #fff;
-    --input-bg: #eee;
-    --btn-bg: #0a7d32;
-    --btn-hover: #3c9e4a;
-    --error-color: #cc3333;
-    --highlight-color: #007f3f;
-  }
-
-  .calculadora {
-    background-color: var(--bg-container);
-    padding: 25px;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-    max-width: 480px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .display {
-    background-color: black;
-    color: var(--highlight-color);
-    font-size: 28px;
-    padding: 15px;
-    border-radius: 12px;
-    text-align: center;
-    font-weight: 700;
-    overflow-x: auto;
-  }
-
-  label {
-    font-weight: 700;
-  }
-
-  input[type="number"], input[type="range"] {
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: none;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    font-size: 16px;
-    outline: none;
-  }
-
-  .checkbox-group {
-    margin-top: 10px;
-  }
-  .checkbox-group label {
-    font-weight: normal;
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
-  .checkbox-group input[type="checkbox"] {
-    margin-right: 8px;
-  }
-  .percent-group {
-    display: flex;
-    gap: 12px;
-  }
-  .percent-group > div {
-    flex: 1;
-  }
-
-  button {
-    margin-top: 15px;
-    padding: 15px;
-    font-size: 18px;
-    border-radius: 10px;
-    border: none;
-    background-color: var(--btn-bg);
-    color: white;
-    cursor: pointer;
-    font-weight: 700;
-    transition: background-color 0.3s;
-  }
-  button:hover {
-    background-color: var(--btn-hover);
-  }
-
-  .historico {
-    background-color: var(--input-bg);
-    padding: 15px;
-    border-radius: 12px;
-    max-height: 180px;
-    overflow-y: auto;
-    font-size: 14px;
-    font-family: monospace;
-  }
-  .historico strong {
-    color: var(--highlight-color);
-    margin-bottom: 8px;
-    display: block;
-  }
-  .historico div {
-    border-bottom: 1px solid #444;
-    padding: 4px 0;
-  }
-
-  .erro {
-    color: var(--error-color);
-    font-weight: 700;
-    margin-top: 8px;
-    text-align: center;
-  }
-
-  /* Responsividade */
-  @media (max-width: 500px) {
-    .display {
+  <meta charset="UTF-8">
+  <title>Calculadora de Pena</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 20px;
+      padding: 0;
+      background: #f5f5f5;
+    }
+    h1 {
       font-size: 24px;
     }
-    button {
-      font-size: 16px;
-      padding: 12px;
+    label, input, select, textarea, button {
+      display: block;
+      width: 100%;
+      margin-bottom: 15px;
     }
-  }
-
-  /* Guia passo a passo */
-  .passo-a-passo {
-    background-color: var(--input-bg);
-    border-radius: 12px;
-    padding: 15px;
-    font-size: 14px;
-    line-height: 1.4;
-    color: var(--text-color);
-  }
-
-  /* Toggle dark/light */
-  .toggle-theme {
-    align-self: flex-end;
-    margin-bottom: 10px;
-    background-color: transparent;
-    border: 2px solid var(--btn-bg);
-    color: var(--btn-bg);
-    padding: 6px 14px;
-    font-weight: 700;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  .toggle-theme:hover {
-    background-color: var(--btn-bg);
-    color: white;
-  }
-</style>
+    input, select, textarea {
+      padding: 10px;
+      font-size: 16px;
+    }
+    button {
+      padding: 10px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+    }
+    #resultado {
+      background: white;
+      padding: 15px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
+  <h1>Calculadora de Pena</h1>
 
-<div class="calculadora">
+  <label> Pena Base (anos): <input type="number" id="penaBase" step="0.01"> </label>
 
-  <button class="toggle-theme" id="toggleTheme">Modo Claro</button>
+  <label> Máximo Legal (anos): <input type="number" id="maximoLegal" step="0.01"> </label>
 
-  <div class="display" id="display">Pena: 0 anos</div>
+  <label> Agravantes (ex: reincidência, motivo torpe): <textarea id="agravantes"></textarea> </label>
 
-  <label for="penaMin">Pena mínima (anos):</label>
-  <input type="number" id="penaMin" value="1" min="0" step="1" />
+  <label> Atenuantes (ex: confissão, menoridade): <textarea id="atenuantes"></textarea> </label>
 
-  <label for="penaMax">Pena máxima (anos):</label>
-  <input type="number" id="penaMax" value="5" min="0" step="1" />
+  <label> Causas de Aumento (ex: concurso de agentes - 1/6): <textarea id="aumentos"></textarea> </label>
 
-  <div class="checkbox-group">
-    <strong>Agravantes:</strong>
-    <label><input type="checkbox" class="agravante" data-valor="0.2" /> Reincidência (+20%)</label>
-    <label><input type="checkbox" class="agravante" data-valor="0.1" /> Uso de violência (+10%)</label>
-    <label><input type="checkbox" class="agravante" data-valor="0.3" /> Crime hediondo (+30%)</label>
-  </div>
+  <label> Causas de Redução (ex: tentativa - 1/3): <textarea id="reducoes"></textarea> </label>
 
-  <div class="checkbox-group">
-    <strong>Atenuantes:</strong>
-    <label><input type="checkbox" class="atenuante" data-valor="0.15" /> Confissão (-15%)</label>
-    <label><input type="checkbox" class="atenuante" data-valor="0.1" /> Primariedade (-10%)</label>
-    <label><input type="checkbox" class="atenuante" data-valor="0.05" /> Bons antecedentes (-5%)</label>
-  </div>
+  <label> Crime Hediondo? 
+    <select id="hediondo">
+      <option value="nao">Não</option>
+      <option value="sim">Sim</option>
+    </select>
+  </label>
 
-  <div class="percent-group">
-    <div>
-      <label for="aumento">Aumento fixo (%)</label>
-      <input type="number" id="aumento" value="0" step="1" min="0" />
-    </div>
-    <div>
-      <label for="reducao">Redução fixa (%)</label>
-      <input type="number" id="reducao" value="0" step="1" min="0" />
-    </div>
-  </div>
+  <button onclick="calcularPena()">Calcular</button>
+  <button onclick="copiarRelatorio()">Copiar Relatório</button>
 
-  <button id="btnExportar">Exportar Relatório (TXT)</button>
-  <button id="btnLimpar">Limpar</button>
+  <div id="resultado"></div>
 
-  <div class="erro" id="erro"></div>
-
-  <div class="passo-a-passo" id="passoAPasso">
-    <strong>Guia Passo a Passo:</strong>
-    <ol>
-      <li>Informe a pena mínima e máxima.</li>
-      <li>Selecione agravantes aplicáveis (aumentam a pena).</li>
-      <li>Selecione atenuantes aplicáveis (reduzem a pena).</li>
-      <li>Ajuste aumentos ou reduções fixas, se necessário.</li>
-      <li>Veja o resultado atualizado automaticamente abaixo.</li>
-      <li>Use o botão "Exportar Relatório" para salvar os dados.</li>
-    </ol>
-  </div>
-
-  <div class="historico" id="historico">
-    <strong>Histórico:</strong>
-    <div id="listaHistorico"></div>
-  </div>
-
-</div>
-
-<script>
-  const body = document.body;
-  const toggleThemeBtn = document.getElementById('toggleTheme');
-
-  // Modo claro/escuro persistente via localStorage
-  function aplicarTema(tema) {
-    if(tema === 'light') {
-      body.classList.add('light');
-      toggleThemeBtn.textContent = 'Modo Escuro';
-    } else {
-      body.classList.remove('light');
-      toggleThemeBtn.textContent = 'Modo Claro';
+  <script>
+    function aplicarFatores(pena, fatores, operacao = 'aumento') {
+      fatores = fatores.split('\n').map(f => f.trim()).filter(f => f !== '');
+      let explicacoes = [];
+      fatores.forEach(fator => {
+        let match = fator.match(/([0-9]+)\/([0-9]+)/);
+        if (match) {
+          let numerador = parseInt(match[1]);
+          let denominador = parseInt(match[2]);
+          let fracao = numerador / denominador;
+          let valor = pena * fracao;
+          pena = operacao === 'aumento' ? pena + valor : pena - valor;
+          explicacoes.push(`${operacao === 'aumento' ? 'Aumento' : 'Redução'} de ${numerador}/${denominador} (${(fracao * 100).toFixed(1)}%) → ${pena.toFixed(2)} anos`);
+        }
+      });
+      return { pena, explicacoes };
     }
-    localStorage.setItem('tema', tema);
-  }
 
-  toggleThemeBtn.addEventListener('click', () => {
-    const atual = localStorage.getItem('tema') || 'dark';
-    aplicarTema(atual === 'dark' ? 'light' : 'dark');
-  });
+    function calcularPena() {
+      let penaBase = parseFloat(document.getElementById('penaBase').value);
+      const maximo = parseFloat(document.getElementById('maximoLegal').value);
+      const agravantes = document.getElementById('agravantes').value.trim();
+      const atenuantes = document.getElementById('atenuantes').value.trim();
+      const aumentos = document.getElementById('aumentos').value.trim();
+      const reducoes = document.getElementById('reducoes').value.trim();
+      const hediondo = document.getElementById('hediondo').value;
 
-  // Aplica tema salvo no início
-  aplicarTema(localStorage.getItem('tema') || 'dark');
-
-  let pena = 0;
-  let historico = JSON.parse(localStorage.getItem('historicoDosimetria')) || [];
-
-  const penaMinInput = document.getElementById('penaMin');
-  const penaMaxInput = document.getElementById('penaMax');
-  const agravantesCheckboxes = document.querySelectorAll('.agravante');
-  const atenuantesCheckboxes = document.querySelectorAll('.atenuante');
-  const aumentoInput = document.getElementById('aumento');
-  const reducaoInput = document.getElementById('reducao');
-  const display = document.getElementById('display');
-  const erroDiv = document.getElementById('erro');
-  const listaHistorico = document.getElementById('listaHistorico');
-  const btnLimpar = document.getElementById('btnLimpar');
-  const btnExportar = document.getElementById('btnExportar');
-
-  // Salva histórico no localStorage
-  function salvarHistorico() {
-    localStorage.setItem('historicoDosimetria', JSON.stringify(historico));
-  }
-
-  // Adiciona texto ao histórico (com hora)
-  function adicionarAoHistorico(texto) {
-    const hora = new Date().toLocaleTimeString();
-    historico.unshift(`[${hora}] ${texto}`);
-    if (historico.length > 30) historico.pop(); // Limita a 30 entradas
-    salvarHistorico();
-    mostrarHistorico();
-  }
-
-  // Exibe histórico na tela
-  function mostrarHistorico() {
-    listaHistorico.innerHTML = historico.map(item => `<div>• ${item}</div>`).join('');
-  }
-
-  // Valida entradas
-  function validar() {
-    erroDiv.innerText = '';
-    const min = parseFloat(penaMinInput.value);
-    const max = parseFloat(penaMaxInput.value);
-
-    if (isNaN(min) || isNaN(max)) {
-      erroDiv.innerText = 'Informe valores válidos para pena mínima e máxima.';
-      return false;
-    }
-    if (min < 0 || max < 0) {
-      erroDiv.innerText = 'Penas não podem ser negativas.';
-      return false;
-    }
-    if (min > max) {
-      erroDiv.innerText = 'Pena mínima não pode ser maior que a máxima.';
-      return false;
-    }
-    return true;
-  }
-
-  // Converte pena em anos decimais para anos e meses
-  function anosEMeses(penaDecimal) {
-    const anos = Math.floor(penaDecimal);
-    const meses = Math.round((penaDecimal - anos) * 12);
-    return { anos, meses };
-  }
-
-  // Atualiza display mostrando anos e meses
-  function atualizarDisplay() {
-    const { anos, meses } = anosEMeses(pena);
-    let texto = 'Pena: ';
-    if (anos > 0) texto += `${anos} ano${anos > 1 ? 's' : ''}`;
-    if (meses > 0) texto += (anos > 0 ? ' e ' : '') + `${meses} mês${meses > 1 ? 'es' : ''}`;
-    if (anos === 0 && meses === 0) texto += '0 anos';
-    display.innerText = texto;
-  }
-
-  // Calcula pena com todos os fatores
-  function calcular() {
-    if (!validar()) {
-      pena = 0;
-      atualizarDisplay();
-      return;
-    }
-    const min = parseFloat(penaMinInput.value);
-    const max = parseFloat(penaMaxInput.value);
-    // Base inicial: média entre min e max
-    pena = (min + max) / 2;
-
-    // Soma agravantes
-    let aumento = 0;
-    agravantesCheckboxes.forEach(cb => {
-      if (cb.checked) aumento += parseFloat(cb.dataset.valor);
-    });
-    pena *= (1 + aumento);
-
-    // Soma atenuantes
-    let reducao = 0;
-    atenuantesCheckboxes.forEach(cb => {
-      if (cb.checked) reducao += parseFloat(cb.dataset.valor);
-    });
-    pena *= (1 - reducao);
-
-    // Aplicar aumentos/reduções fixos
-    const aumentoFixo = parseFloat(aumentoInput.value) || 0;
-    const reducaoFixa = parseFloat(reducaoInput.value) || 0;
-
-    pena *= (1 + aumentoFixo / 100);
-    pena *= (1 - reducaoFixa / 100);
-
-    // Limites de pena
-    if (pena < min) pena = min;
-    if (pena > max) pena = max;
-
-    pena = Math.round(pena * 100) / 100; // duas casas decimais para meses
-
-    atualizarDisplay();
-  }
-
-  // Limpa tudo e histórico
-  function limpar() {
-    penaMinInput.value = 1;
-    penaMaxInput.value = 5;
-    aumentoInput.value = 0;
-    reducaoInput.value = 0;
-    agravantesCheckboxes.forEach(cb => cb.checked = false);
-    atenuantesCheckboxes.forEach(cb => cb.checked = false);
-    erroDiv.innerText = '';
-    pena = 0;
-    atualizarDisplay();
-    historico = [];
-    salvarHistorico();
-    mostrarHistorico();
-  }
-
-  // Exporta relatório TXT do cálculo atual
-  function exportarRelatorio() {
-    if (!validar()) {
-      alert('Corrija os erros antes de exportar o relatório.');
-      return;
-    }
-    const { anos, meses } = anosEMeses(pena);
-    let texto = 'Relatório de Dosimetria Penal\n\n';
-    texto += `Pena mínima: ${penaMinInput.value} anos\n`;
-    texto += `Pena máxima: ${penaMaxInput.value} anos\n\n`;
-    texto += 'Agravantes selecionados:\n';
-    agravantesCheckboxes.forEach(cb => {
-      if (cb.checked) texto += ` - ${cb.parentElement.textContent.trim()}\n`;
-    });
-    texto += '\nAtenuantes selecionados:\n';
-    atenuantesCheckboxes.forEach(cb => {
-      if (cb.checked) texto += ` - ${cb.parentElement.textContent.trim()}\n`;
-    });
-    texto += `\nAumento fixo: ${aumentoInput.value}%\n`;
-    texto += `Redução fixa: ${reducaoInput.value}%\n\n`;
-    texto += `Pena final calculada: ${anos} ano${anos !== 1 ? 's' : ''} e ${meses} mês${meses !== 1 ? 'es' : ''}\n`;
-    texto += '\nGerado em: ' + new Date().toLocaleString();
-
-    // Criar arquivo TXT e baixar
-    const blob = new Blob([texto], {type: 'text/plain'});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'relatorio-dosimetria.txt';
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  // Eventos para recalcular em tempo real e salvar histórico
-  [
-    penaMinInput,
-    penaMaxInput,
-    aumentoInput,
-    reducaoInput,
-    ...agravantesCheckboxes,
-    ...atenuantesCheckboxes
-  ].forEach(el => {
-    el.addEventListener('input', () => {
-      calcular();
-      if(validar()){
-        adicionarAoHistorico(display.innerText);
+      if (isNaN(penaBase)) {
+        alert("Insira a pena base.");
+        return;
       }
-    });
-  });
 
-  btnLimpar.addEventListener('click', limpar);
-  btnExportar.addEventListener('click', exportarRelatorio);
+      let relatorio = `🔹 Pena Base: ${penaBase.toFixed(2)} anos\n`;
 
-  // Inicialização
-  mostrarHistorico();
-  calcular();
-</script>
+      if (agravantes) {
+        relatorio += `\n🔸 Agravantes:\n${agravantes}`;
+        penaBase += 1; // valor fictício, pode ser ajustado conforme necessidade
+        relatorio += `\n+1 ano → ${penaBase.toFixed(2)} anos`;
+      }
 
+      if (atenuantes) {
+        relatorio += `\n\n🔸 Atenuantes:\n${atenuantes}`;
+        penaBase -= 1;
+        relatorio += `\n-1 ano → ${penaBase.toFixed(2)} anos`;
+      }
+
+      if (aumentos) {
+        let { pena, explicacoes } = aplicarFatores(penaBase, aumentos, 'aumento');
+        relatorio += `\n\n🔸 Causas de Aumento:\n` + explicacoes.join('\n');
+        penaBase = pena;
+      }
+
+      if (reducoes) {
+        let { pena, explicacoes } = aplicarFatores(penaBase, reducoes, 'reducao');
+        relatorio += `\n\n🔸 Causas de Redução:\n` + explicacoes.join('\n');
+        penaBase = pena;
+      }
+
+      if (hediondo === "sim") {
+        relatorio += `\n\n🔒 Crime Hediondo: sim\n⚠️ Regime inicial: fechado, sem liberdade provisória (art. 2º, §1º da Lei 8.072/90)`;
+      }
+
+      if (!isNaN(maximo) && penaBase > maximo) {
+        relatorio += `\n\n⚠️ Pena excede o máximo legal (${maximo} anos), ajustando...`;
+        penaBase = maximo;
+      }
+
+      relatorio += `\n\n✅ Pena Final: ${penaBase.toFixed(2)} anos`;
+
+      document.getElementById("resultado").textContent = relatorio;
+    }
+
+    function copiarRelatorio() {
+      const resultado = document.getElementById("resultado").textContent;
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(resultado).then(() => alert("Relatório copiado!"));
+      } else {
+        // Fallback para iOS Safari
+        const textarea = document.createElement("textarea");
+        textarea.value = resultado;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand("copy");
+          alert("Relatório copiado!");
+        } catch (err) {
+          alert("Não foi possível copiar.");
+        }
+        document.body.removeChild(textarea);
+      }
+    }
+  </script>
 </body>
 </html>
