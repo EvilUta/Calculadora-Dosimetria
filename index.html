@@ -121,7 +121,8 @@
       <input type="number" id="maximoLegal" step="0.01" min="0" />
     </label>
 
-    <div class="checkbox-group">
+    <!-- Alteração: IDs adicionados em cada grupo -->
+    <div class="checkbox-group" id="agravantes">
       <strong>Agravantes:</strong>
       <label><input type="checkbox" value="Reincidência" />Reincidência</label>
       <label><input type="checkbox" value="Motivo torpe" />Motivo torpe</label>
@@ -130,7 +131,7 @@
       <label><input type="checkbox" value="Dificultar defesa da vítima" />Dificultar defesa da vítima</label>
     </div>
 
-    <div class="checkbox-group">
+    <div class="checkbox-group" id="atenuantes">
       <strong>Atenuantes:</strong>
       <label><input type="checkbox" value="Confissão espontânea" />Confissão espontânea</label>
       <label><input type="checkbox" value="Menoridade" />Menoridade</label>
@@ -139,7 +140,7 @@
       <label><input type="checkbox" value="Boa conduta anterior" />Boa conduta anterior</label>
     </div>
 
-    <div class="checkbox-group">
+    <div class="checkbox-group" id="causasAumento">
       <strong>Causas de Aumento:</strong>
       <label><input type="checkbox" value="1/6" />Concurso de agentes (1/6)</label>
       <label><input type="checkbox" value="1/6" />Crime contra criança (1/6)</label>
@@ -147,7 +148,7 @@
       <label><input type="checkbox" value="2/2" />Uso de explosivo (2/2)</label>
     </div>
 
-    <div class="checkbox-group">
+    <div class="checkbox-group" id="causasReducao">
       <strong>Causas de Redução:</strong>
       <label><input type="checkbox" value="1/3" />Tentativa (1/3)</label>
       <label><input type="checkbox" value="1/2" />Arrependimento posterior (1/2)</label>
@@ -179,98 +180,99 @@
   <script>
     // Lista exemplo de crimes com código, nome e penas mínima e máxima (anos)
     const crimes = [
-  { "codigo": "121", "nome": "Homicídio simples", "penaMin": 6, "penaMax": 20 },
-  { "codigo": "121§2", "nome": "Homicídio qualificado", "penaMin": 12, "penaMax": 30 },
-  { "codigo": "121§3", "nome": "Homicídio culposo", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "123", "nome": "Infanticídio", "penaMin": 2, "penaMax": 6 },
-  { "codigo": "125", "nome": "Aborto provocado pela gestante", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "126", "nome": "Aborto com consentimento da gestante", "penaMin": 1, "penaMax": 4 },
-  { "codigo": "129", "nome": "Lesão corporal", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "129§1", "nome": "Lesão corporal de natureza grave", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "129§2", "nome": "Lesão corporal gravíssima", "penaMin": 2, "penaMax": 8 },
-  { "codigo": "129§3", "nome": "Lesão corporal seguida de morte", "penaMin": 4, "penaMax": 12 },
-  { "codigo": "138", "nome": "Calúnia", "penaMin": 0.5, "penaMax": 2 },
-  { "codigo": "139", "nome": "Difamação", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "140", "nome": "Injúria", "penaMin": 0.083, "penaMax": 0.5 },
-  { "codigo": "147", "nome": "Ameaça", "penaMin": 0.083, "penaMax": 0.5 },
-  { "codigo": "155", "nome": "Furto", "penaMin": 1, "penaMax": 4 },
-  { "codigo": "157", "nome": "Roubo", "penaMin": 4, "penaMax": 10 },
-  { "codigo": "157§2", "nome": "Roubo circunstanciado", "penaMin": 5, "penaMax": 15 },
-  { "codigo": "157§3", "nome": "Roubo com resultado lesão grave", "penaMin": 7, "penaMax": 18 },
-  { "codigo": "157§3M", "nome": "Roubo com resultado morte (latrocínio)", "penaMin": 20, "penaMax": 30 },
-  { "codigo": "158", "nome": "Extorsão", "penaMin": 4, "penaMax": 10 },
-  { "codigo": "159", "nome": "Extorsão mediante sequestro", "penaMin": 8, "penaMax": 15 },
-  { "codigo": "160", "nome": "Extorsão indireta", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "163", "nome": "Dano qualificado", "penaMin": 0.5, "penaMax": 3 },
-  { "codigo": "171", "nome": "Estelionato", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "180", "nome": "Receptação", "penaMin": 1, "penaMax": 4 },
-  { "codigo": "213", "nome": "Estupro", "penaMin": 6, "penaMax": 10 },
-  { "codigo": "213§1", "nome": "Estupro com lesão grave ou morte", "penaMin": 8, "penaMax": 20 },
-  { "codigo": "217-A", "nome": "Estupro de vulnerável", "penaMin": 8, "penaMax": 20 },
-  { "codigo": "218-B", "nome": "Favorecimento da prostituição", "penaMin": 3, "penaMax": 8 },
-  { "codigo": "288", "nome": "Associação criminosa", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "302", "nome": "Homicídio culposo na direção de veículo", "penaMin": 2, "penaMax": 4 },
-  { "codigo": "303", "nome": "Lesão corporal na direção de veículo", "penaMin": 0.5, "penaMax": 2 },
-  { "codigo": "306", "nome": "Conduzir sob influência de álcool ou drogas", "penaMin": 0.5, "penaMax": 3 },
-  { "codigo": "312", "nome": "Peculato", "penaMin": 2, "penaMax": 12 },
-  { "codigo": "313", "nome": "Peculato culposo", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "316", "nome": "Concussão", "penaMin": 2, "penaMax": 12 },
-  { "codigo": "317", "nome": "Corrupção passiva", "penaMin": 2, "penaMax": 12 },
-  { "codigo": "333", "nome": "Corrupção ativa", "penaMin": 2, "penaMax": 12 },
-  { "codigo": "339", "nome": "Denunciação caluniosa", "penaMin": 2, "penaMax": 8 },
-{ "codigo": "121§4", "nome": "Homicídio privilegiado", "penaMin": 4, "penaMax": 12 },
-  { "codigo": "122", "nome": "Induzimento, instigação ou auxílio ao suicídio", "penaMin": 2, "penaMax": 6 },
-  { "codigo": "124", "nome": "Aborto provocado por terceiro com consentimento", "penaMin": 1, "penaMax": 4 },
-  { "codigo": "127", "nome": "Aumento de pena para aborto cometido por terceiro", "penaMin": "Aumento de 1/3", "penaMax": null },
-  { "codigo": "128", "nome": "Aborto legal (excludente de ilicitude)", "penaMin": 0, "penaMax": 0 },
-  { "codigo": "130", "nome": "Perigo de contágio venéreo", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "131", "nome": "Perigo de contágio de moléstia grave", "penaMin": 1, "penaMax": 4 },
-  { "codigo": "132", "nome": "Perigo para a vida ou saúde de outrem", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "133", "nome": "Abandono de incapaz", "penaMin": 0.5, "penaMax": 3 },
-  { "codigo": "134", "nome": "Exposição ou abandono de recém-nascido", "penaMin": 0.5, "penaMax": 2 },
-  { "codigo": "135", "nome": "Omissão de socorro", "penaMin": 0.083, "penaMax": 0.5 },
-  { "codigo": "136", "nome": "Maus-tratos", "penaMin": 0.166, "penaMax": 1 },
-  { "codigo": "148", "nome": "Sequestro ou cárcere privado", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "180-A", "nome": "Importunação sexual", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "180-B", "nome": "Divulgação de cena de estupro ou nudez", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "203", "nome": "Redução a condição análoga à de escravo", "penaMin": 2, "penaMax": 8 },
-  { "codigo": "204", "nome": "Entrega de filho menor a terceiro mediante paga", "penaMin": 1, "penaMax": 4 },
-  { "codigo": "205", "nome": "Atentado contra a liberdade de trabalho", "penaMin": 1, "penaMax": 2 },
-  { "codigo": "206", "nome": "Frustração de direito assegurado por lei trabalhista", "penaMin": 1, "penaMax": 2 },
-  { "codigo": "207", "nome": "Frustração de lei sobre nacionalização do trabalho", "penaMin": 1, "penaMax": 2 },
-  { "codigo": "208", "nome": "Impedir ou perturbar cerimônia religiosa", "penaMin": 0.083, "penaMax": 1 },
-  { "codigo": "209", "nome": "Exercício arbitrário das próprias razões", "penaMin": 0.041, "penaMax": 0.5 },
-  { "codigo": "210", "nome": "Subtração de coisa comum", "penaMin": 0.5, "penaMax": 2 },
-  { "codigo": "215", "nome": "Violação sexual mediante fraude", "penaMin": 2, "penaMax": 6 },
-  { "codigo": "215-A", "nome": "Importunação sexual", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "216", "nome": "Assédio sexual", "penaMin": 1, "penaMax": 2 },
-  { "codigo": "216-A", "nome": "Divulgação de cena de estupro/nudez/sexo", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "218", "nome": "Corrupção de menores", "penaMin": 2, "penaMax": 6 },
-  { "codigo": "218-A", "nome": "Satisfação de lascívia na presença de criança ou adolescente", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "219", "nome": "Bigamia", "penaMin": 2, "penaMax": 6 },
-  { "codigo": "220", "nome": "Induzimento a erro essencial e ocultação de impedimento", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "221", "nome": "Simulação de autoridade para casamento", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "239", "nome": "Recrutamento para grupo armado contra a ordem constitucional", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "240", "nome": "Vilipêndio a cadáver", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "243", "nome": "Divulgação de segredo profissional", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "244", "nome": "Violação de correspondência", "penaMin": 0.083, "penaMax": 0.5 },
-  { "codigo": "288-A", "nome": "Organização criminosa", "penaMin": 3, "penaMax": 8 },
-  { "codigo": "299", "nome": "Falsidade ideológica", "penaMin": 1, "penaMax": 5 },
-  { "codigo": "304", "nome": "Uso de documento falso", "penaMin": 2, "penaMax": 6 },
-  { "codigo": "307", "nome": "Falsa identidade", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "311", "nome": "Adulteração de sinal identificador de veículo", "penaMin": 3, "penaMax": 6 },
-  { "codigo": "321", "nome": "Advocacia administrativa", "penaMin": 1, "penaMax": 3 },
-  { "codigo": "325", "nome": "Violação de sigilo funcional", "penaMin": 0.5, "penaMax": 2 },
-  { "codigo": "326", "nome": "Violação de sigilo profissional", "penaMin": 0.25, "penaMax": 1 },
-  { "codigo": "328", "nome": "Usurpação de função pública", "penaMin": 2, "penaMax": 5 },
-  { "codigo": "329", "nome": "Resistência", "penaMin": 0.166, "penaMax": 2 },
-  { "codigo": "330", "nome": "Desobediência", "penaMin": 0.041, "penaMax": 0.5 },
-  { "codigo": "331", "nome": "Desacato", "penaMin": 0.5, "penaMax": 2 },
-  { "codigo": "332", "nome": "Tráfico de influência", "penaMin": 2, "penaMax": 5 },
-  { "codigo": "340", "nome": "Comunicação falsa de crime ou contravenção", "penaMin": 0.083, "penaMax": 0.5 },
-  { "codigo": "121§2VI", "nome": "Feminicídio", "penaMin": 12, "penaMax": 30 },
+      /* ... (sua lista de crimes permanece igual) ... */
+      { "codigo": "121", "nome": "Homicídio simples", "penaMin": 6, "penaMax": 20 },
+      { "codigo": "121§2", "nome": "Homicídio qualificado", "penaMin": 12, "penaMax": 30 },
+      { "codigo": "121§3", "nome": "Homicídio culposo", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "123", "nome": "Infanticídio", "penaMin": 2, "penaMax": 6 },
+      { "codigo": "125", "nome": "Aborto provocado pela gestante", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "126", "nome": "Aborto com consentimento da gestante", "penaMin": 1, "penaMax": 4 },
+      { "codigo": "129", "nome": "Lesão corporal", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "129§1", "nome": "Lesão corporal de natureza grave", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "129§2", "nome": "Lesão corporal gravíssima", "penaMin": 2, "penaMax": 8 },
+      { "codigo": "129§3", "nome": "Lesão corporal seguida de morte", "penaMin": 4, "penaMax": 12 },
+      { "codigo": "138", "nome": "Calúnia", "penaMin": 0.5, "penaMax": 2 },
+      { "codigo": "139", "nome": "Difamação", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "140", "nome": "Injúria", "penaMin": 0.083, "penaMax": 0.5 },
+      { "codigo": "147", "nome": "Ameaça", "penaMin": 0.083, "penaMax": 0.5 },
+      { "codigo": "155", "nome": "Furto", "penaMin": 1, "penaMax": 4 },
+      { "codigo": "157", "nome": "Roubo", "penaMin": 4, "penaMax": 10 },
+      { "codigo": "157§2", "nome": "Roubo circunstanciado", "penaMin": 5, "penaMax": 15 },
+      { "codigo": "157§3", "nome": "Roubo com resultado lesão grave", "penaMin": 7, "penaMax": 18 },
+      { "codigo": "157§3M", "nome": "Roubo com resultado morte (latrocínio)", "penaMin": 20, "penaMax": 30 },
+      { "codigo": "158", "nome": "Extorsão", "penaMin": 4, "penaMax": 10 },
+      { "codigo": "159", "nome": "Extorsão mediante sequestro", "penaMin": 8, "penaMax": 15 },
+      { "codigo": "160", "nome": "Extorsão indireta", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "163", "nome": "Dano qualificado", "penaMin": 0.5, "penaMax": 3 },
+      { "codigo": "171", "nome": "Estelionato", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "180", "nome": "Receptação", "penaMin": 1, "penaMax": 4 },
+      { "codigo": "213", "nome": "Estupro", "penaMin": 6, "penaMax": 10 },
+      { "codigo": "213§1", "nome": "Estupro com lesão grave ou morte", "penaMin": 8, "penaMax": 20 },
+      { "codigo": "217-A", "nome": "Estupro de vulnerável", "penaMin": 8, "penaMax": 20 },
+      { "codigo": "218-B", "nome": "Favorecimento da prostituição", "penaMin": 3, "penaMax": 8 },
+      { "codigo": "288", "nome": "Associação criminosa", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "302", "nome": "Homicídio culposo na direção de veículo", "penaMin": 2, "penaMax": 4 },
+      { "codigo": "303", "nome": "Lesão corporal na direção de veículo", "penaMin": 0.5, "penaMax": 2 },
+      { "codigo": "306", "nome": "Conduzir sob influência de álcool ou drogas", "penaMin": 0.5, "penaMax": 3 },
+      { "codigo": "312", "nome": "Peculato", "penaMin": 2, "penaMax": 12 },
+      { "codigo": "313", "nome": "Peculato culposo", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "316", "nome": "Concussão", "penaMin": 2, "penaMax": 12 },
+      { "codigo": "317", "nome": "Corrupção passiva", "penaMin": 2, "penaMax": 12 },
+      { "codigo": "333", "nome": "Corrupção ativa", "penaMin": 2, "penaMax": 12 },
+      { "codigo": "339", "nome": "Denunciação caluniosa", "penaMin": 2, "penaMax": 8 },
+      { "codigo": "121§4", "nome": "Homicídio privilegiado", "penaMin": 4, "penaMax": 12 },
+      { "codigo": "122", "nome": "Induzimento, instigação ou auxílio ao suicídio", "penaMin": 2, "penaMax": 6 },
+      { "codigo": "124", "nome": "Aborto provocado por terceiro com consentimento", "penaMin": 1, "penaMax": 4 },
+      { "codigo": "127", "nome": "Aumento de pena para aborto cometido por terceiro", "penaMin": "Aumento de 1/3", "penaMax": null },
+      { "codigo": "128", "nome": "Aborto legal (excludente de ilicitude)", "penaMin": 0, "penaMax": 0 },
+      { "codigo": "130", "nome": "Perigo de contágio venéreo", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "131", "nome": "Perigo de contágio de moléstia grave", "penaMin": 1, "penaMax": 4 },
+      { "codigo": "132", "nome": "Perigo para a vida ou saúde de outrem", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "133", "nome": "Abandono de incapaz", "penaMin": 0.5, "penaMax": 3 },
+      { "codigo": "134", "nome": "Exposição ou abandono de recém-nascido", "penaMin": 0.5, "penaMax": 2 },
+      { "codigo": "135", "nome": "Omissão de socorro", "penaMin": 0.083, "penaMax": 0.5 },
+      { "codigo": "136", "nome": "Maus-tratos", "penaMin": 0.166, "penaMax": 1 },
+      { "codigo": "148", "nome": "Sequestro ou cárcere privado", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "180-A", "nome": "Importunação sexual", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "180-B", "nome": "Divulgação de cena de estupro ou nudez", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "203", "nome": "Redução a condição análoga à de escravo", "penaMin": 2, "penaMax": 8 },
+      { "codigo": "204", "nome": "Entrega de filho menor a terceiro mediante paga", "penaMin": 1, "penaMax": 4 },
+      { "codigo": "205", "nome": "Atentado contra a liberdade de trabalho", "penaMin": 1, "penaMax": 2 },
+      { "codigo": "206", "nome": "Frustração de direito assegurado por lei trabalhista", "penaMin": 1, "penaMax": 2 },
+      { "codigo": "207", "nome": "Frustração de lei sobre nacionalização do trabalho", "penaMin": 1, "penaMax": 2 },
+      { "codigo": "208", "nome": "Impedir ou perturbar cerimônia religiosa", "penaMin": 0.083, "penaMax": 1 },
+      { "codigo": "209", "nome": "Exercício arbitrário das próprias razões", "penaMin": 0.041, "penaMax": 0.5 },
+      { "codigo": "210", "nome": "Subtração de coisa comum", "penaMin": 0.5, "penaMax": 2 },
+      { "codigo": "215", "nome": "Violação sexual mediante fraude", "penaMin": 2, "penaMax": 6 },
+      { "codigo": "215-A", "nome": "Importunação sexual", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "216", "nome": "Assédio sexual", "penaMin": 1, "penaMax": 2 },
+      { "codigo": "216-A", "nome": "Divulgação de cena de estupro/nudez/sexo", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "218", "nome": "Corrupção de menores", "penaMin": 2, "penaMax": 6 },
+      { "codigo": "218-A", "nome": "Satisfação de lascívia na presença de criança ou adolescente", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "219", "nome": "Bigamia", "penaMin": 2, "penaMax": 6 },
+      { "codigo": "220", "nome": "Induzimento a erro essencial e ocultação de impedimento", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "221", "nome": "Simulação de autoridade para casamento", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "239", "nome": "Recrutamento para grupo armado contra a ordem constitucional", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "240", "nome": "Vilipêndio a cadáver", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "243", "nome": "Divulgação de segredo profissional", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "244", "nome": "Violação de correspondência", "penaMin": 0.083, "penaMax": 0.5 },
+      { "codigo": "288-A", "nome": "Organização criminosa", "penaMin": 3, "penaMax": 8 },
+      { "codigo": "299", "nome": "Falsidade ideológica", "penaMin": 1, "penaMax": 5 },
+      { "codigo": "304", "nome": "Uso de documento falso", "penaMin": 2, "penaMax": 6 },
+      { "codigo": "307", "nome": "Falsa identidade", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "311", "nome": "Adulteração de sinal identificador de veículo", "penaMin": 3, "penaMax": 6 },
+      { "codigo": "321", "nome": "Advocacia administrativa", "penaMin": 1, "penaMax": 3 },
+      { "codigo": "325", "nome": "Violação de sigilo funcional", "penaMin": 0.5, "penaMax": 2 },
+      { "codigo": "326", "nome": "Violação de sigilo profissional", "penaMin": 0.25, "penaMax": 1 },
+      { "codigo": "328", "nome": "Usurpação de função pública", "penaMin": 2, "penaMax": 5 },
+      { "codigo": "329", "nome": "Resistência", "penaMin": 0.166, "penaMax": 2 },
+      { "codigo": "330", "nome": "Desobediência", "penaMin": 0.041, "penaMax": 0.5 },
+      { "codigo": "331", "nome": "Desacato", "penaMin": 0.5, "penaMax": 2 },
+      { "codigo": "332", "nome": "Tráfico de influência", "penaMin": 2, "penaMax": 5 },
+      { "codigo": "340", "nome": "Comunicação falsa de crime ou contravenção", "penaMin": 0.083, "penaMax": 0.5 },
+      { "codigo": "121§2VI", "nome": "Feminicídio", "penaMin": 12, "penaMax": 30 },
     ];
-    
+
     function filtrarCrimes() {
       const input = document.getElementById('crimeInput').value.toLowerCase();
       const lista = document.getElementById('listaSugestoes');
@@ -279,7 +281,7 @@
       if (input.length === 0) return;
 
       // Busca no código ou no nome
-      const sugestoes = crimes.filter(c => 
+      const sugestoes = crimes.filter(c =>
         c.codigo.toLowerCase().includes(input) || c.nome.toLowerCase().includes(input)
       ).slice(0, 10);
 
@@ -339,22 +341,21 @@
       let relatorio = `🔹 Pena Base: ${anosEMeses(penaBase)}\n`;
 
       // Agravantes
-      const agravantes = Array.from(document.querySelectorAll('.checkbox-group:nth-child(4) input:checked')).map(c => c.value);
+      const agravantes = Array.from(document.querySelectorAll('#agravantes input:checked')).map(c => c.value);
       if (agravantes.length) {
         relatorio += `\n⚠️ Agravantes: ${agravantes.join(', ')}\n`;
-        // Exemplo: 1 agravante = +1/6 (pode adaptar)
         penaBase += penaBase * 1/6 * agravantes.length;
       }
 
       // Atenuantes
-      const atenuantes = Array.from(document.querySelectorAll('.checkbox-group:nth-child(5) input:checked')).map(c => c.value);
+      const atenuantes = Array.from(document.querySelectorAll('#atenuantes input:checked')).map(c => c.value);
       if (atenuantes.length) {
         relatorio += `\n✅ Atenuantes: ${atenuantes.join(', ')}\n`;
         penaBase -= penaBase * 1/6 * atenuantes.length;
       }
 
       // Causas de aumento
-      const causasAumento = Array.from(document.querySelectorAll('.checkbox-group:nth-child(6) input:checked')).map(c => c.value);
+      const causasAumento = Array.from(document.querySelectorAll('#causasAumento input:checked')).map(c => c.value);
       if (causasAumento.length) {
         relatorio += `\n⬆️ Causas de aumento: ${causasAumento.join(', ')}\n`;
         causasAumento.forEach(f => {
@@ -364,7 +365,7 @@
       }
 
       // Causas de redução
-      const causasReducao = Array.from(document.querySelectorAll('.checkbox-group:nth-child(7) input:checked')).map(c => c.value);
+      const causasReducao = Array.from(document.querySelectorAll('#causasReducao input:checked')).map(c => c.value);
       if (causasReducao.length) {
         relatorio += `\n⬇️ Causas de redução: ${causasReducao.join(', ')}\n`;
         causasReducao.forEach(f => {
@@ -416,5 +417,3 @@
   </script>
 </body>
 </html>
-
-
