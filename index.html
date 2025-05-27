@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Calculadora de Pena</title>
+  <title>Calculadora de Pena com Busca</title>
   <style>
     * {
       box-sizing: border-box;
@@ -30,8 +30,9 @@
       display: block;
       margin-top: 15px;
       font-weight: bold;
+      position: relative;
     }
-    input[type="number"], select, textarea {
+    input[type="number"], select, textarea, input[type="text"] {
       width: 100%;
       padding: 8px;
       margin-top: 5px;
@@ -74,6 +75,26 @@
       margin-top: 20px;
       white-space: pre-wrap;
       border-radius: 8px;
+      min-height: 150px;
+    }
+    #listaSugestoes {
+      position: absolute;
+      background: white;
+      border: 1px solid #ccc;
+      border-top: none;
+      max-height: 150px;
+      overflow-y: auto;
+      width: 100%;
+      z-index: 10;
+      border-radius: 0 0 5px 5px;
+    }
+    #listaSugestoes div {
+      padding: 8px;
+      cursor: pointer;
+    }
+    #listaSugestoes div:hover {
+      background-color: #007bff;
+      color: white;
     }
     @media (max-width: 600px) {
       button {
@@ -85,14 +106,19 @@
 </head>
 <body>
   <div class="container">
-    <h1>Calculadora de Pena</h1>
+    <h1>Calculadora de Pena com Busca de Crime</h1>
+
+    <label for="crimeInput">Código ou Nome do Crime:
+      <input type="text" id="crimeInput" autocomplete="off" placeholder="Ex: 121 - Homicídio simples" oninput="filtrarCrimes()" />
+      <div id="listaSugestoes"></div>
+    </label>
 
     <label>Pena Base (anos):
-      <input type="number" id="penaBase" step="0.01" />
+      <input type="number" id="penaBase" step="0.01" min="0" />
     </label>
 
     <label>Máximo Legal (anos):
-      <input type="number" id="maximoLegal" step="0.01" />
+      <input type="number" id="maximoLegal" step="0.01" min="0" />
     </label>
 
     <div class="checkbox-group">
@@ -151,134 +177,165 @@
   </div>
 
   <script>
-    // Função que converte um número decimal de anos em "X anos e Y meses"
-    function anosEmAnosEMeses(decimalAnos) {
-      const anos = Math.floor(decimalAnos);
-      const meses = Math.round((decimalAnos - anos) * 12);
-      let resultado = "";
-      if (anos > 0) {
-        resultado += anos + (anos === 1 ? " ano" : " anos");
-      }
-      if (meses > 0) {
-        if (anos > 0) resultado += " e ";
-        resultado += meses + (meses === 1 ? " mês" : " meses");
-      }
-      if (resultado === "") resultado = "0 anos";
-      return resultado;
+    // Lista exemplo de crimes com código, nome e penas mínima e máxima (anos)
+    const crimes = [
+      { codigo: "121", nome: "Homicídio simples", penaMin: 6, penaMax: 20 },
+      { codigo: "121-A", nome: "Homicídio qualificado", penaMin: 12, penaMax: 30 },
+      { codigo: "129", nome: "Lesão corporal grave", penaMin: 1, penaMax: 5 },
+      { codigo: "155", nome: "Furto simples", penaMin: 1, penaMax: 4 },
+      { codigo: "171", nome: "Estelionato", penaMin: 1, penaMax: 5 },
+      { codigo: "213", nome: "Violência sexual", penaMin: 6, penaMax: 20 },
+      { codigo: "121-B", nome: "Homicídio culposo", penaMin: 1, penaMax: 3 },
+      { codigo: "180", nome: "Abuso de confiança", penaMin: 1, penaMax: 4 },
+      { codigo: "288", nome: "Formação de quadrilha", penaMin: 1, penaMax: 3 },
+      { codigo: "302", nome: "Homicídio no trânsito", penaMin: 2, penaMax: 7 },
+      { codigo: "302-A", nome: "Lesão corporal no trânsito", penaMin: 1, penaMax: 3 },
+      { codigo: "330", nome: "Corrupção ativa", penaMin: 2, penaMax: 12 },
+      { codigo: "332", nome: "Corrupção passiva", penaMin: 2, penaMax: 12 },
+      { codigo: "333", nome: "Concussão", penaMin: 2, penaMax: 12 }
+      // Adicione mais conforme desejar
+    ];
+
+    function filtrarCrimes() {
+      const input = document.getElementById('crimeInput').value.toLowerCase();
+      const lista = document.getElementById('listaSugestoes');
+      lista.innerHTML = ''; // limpa sugestões
+
+      if (input.length === 0) return;
+
+      // Busca no código ou no nome
+      const sugestoes = crimes.filter(c => 
+        c.codigo.toLowerCase().includes(input) || c.nome.toLowerCase().includes(input)
+      ).slice(0, 10);
+
+      sugestoes.forEach(crime => {
+        const div = document.createElement('div');
+        div.textContent = `${crime.codigo} - ${crime.nome}`;
+        div.onclick = () => selecionarCrime(crime);
+        lista.appendChild(div);
+      });
     }
 
-    function aplicarFatores(pena, fatores, operacao = "aumento") {
+    function selecionarCrime(crime) {
+      document.getElementById('crimeInput').value = `${crime.codigo} - ${crime.nome}`;
+      document.getElementById('penaBase').value = crime.penaMin;
+      document.getElementById('maximoLegal').value = crime.penaMax;
+      document.getElementById('listaSugestoes').innerHTML = '';
+    }
+
+    function anosEMeses(anosDecimais) {
+      const anos = Math.floor(anosDecimais);
+      const meses = Math.round((anosDecimais - anos) * 12);
+      let texto = '';
+      if (anos > 0) texto += `${anos} ano${anos > 1 ? 's' : ''}`;
+      if (meses > 0) texto += (texto ? ' e ' : '') + `${meses} mês${meses > 1 ? 'es' : ''}`;
+      if (!texto) texto = '0 meses';
+      return texto;
+    }
+
+    function aplicarFatores(pena, fatores, operacao = 'aumento') {
       let explicacoes = [];
-      fatores.forEach((fator) => {
+      fatores.forEach(fator => {
         const match = fator.match(/(\d+)\/(\d+)/);
         if (match) {
           const num = parseInt(match[1]);
           const den = parseInt(match[2]);
           const fracao = num / den;
           const valor = pena * fracao;
-          pena = operacao === "aumento" ? pena + valor : pena - valor;
-          explicacoes.push(
-            `${operacao === "aumento" ? "Aumento" : "Redução"} de ${
-              num + "/" + den
-            } (${(fracao * 100).toFixed(1)}%) → ${anosEmAnosEMeses(pena)}`
-          );
+          pena = operacao === 'aumento' ? pena + valor : pena - valor;
+          explicacoes.push(`${operacao === 'aumento' ? 'Aumento' : 'Redução'} de ${num}/${den} (${(fracao * 100).toFixed(1)}%) → ${anosEMeses(pena)} `);
         }
       });
       return { pena, explicacoes };
     }
 
     function calcularPena() {
-      let penaBase = parseFloat(document.getElementById("penaBase").value);
-      const maximo = parseFloat(document.getElementById("maximoLegal").value);
-      const hediondo = document.getElementById("hediondo").value;
-      const favoravel = document.getElementById("favoravel").checked;
-      const desfavoravel = document.getElementById("desfavoravel").checked;
+      let penaBase = parseFloat(document.getElementById('penaBase').value);
+      const maximo = parseFloat(document.getElementById('maximoLegal').value);
+      const hediondo = document.getElementById('hediondo').value;
+      const favoravel = document.getElementById('favoravel').checked;
+      const desfavoravel = document.getElementById('desfavoravel').checked;
 
       if (isNaN(penaBase)) {
         alert("Insira a pena base.");
         return;
       }
 
-      let relatorio = `🔹 Pena Base: ${anosEmAnosEMeses(penaBase)}\n`;
+      let relatorio = `🔹 Pena Base: ${anosEMeses(penaBase)}\n`;
 
       // Agravantes
-      const agravantes = Array.from(
-        document.querySelectorAll(".checkbox-group:nth-of-type(1) input:checked")
-      ).map((e) => e.value);
+      const agravantes = Array.from(document.querySelectorAll('.checkbox-group:nth-child(4) input:checked')).map(c => c.value);
       if (agravantes.length) {
-        relatorio += `\n🔸 Agravantes:\n${agravantes.join(", ")}`;
-        penaBase += 1;
-        relatorio += `\n+1 ano → ${anosEmAnosEMeses(penaBase)}`;
+        relatorio += `\n⚠️ Agravantes: ${agravantes.join(', ')}\n`;
+        // Exemplo: 1 agravante = +1/6 (pode adaptar)
+        penaBase += penaBase * 1/6 * agravantes.length;
       }
 
       // Atenuantes
-      const atenuantes = Array.from(
-        document.querySelectorAll(".checkbox-group:nth-of-type(2) input:checked")
-      ).map((e) => e.value);
+      const atenuantes = Array.from(document.querySelectorAll('.checkbox-group:nth-child(5) input:checked')).map(c => c.value);
       if (atenuantes.length) {
-        relatorio += `\n\n🔸 Atenuantes:\n${atenuantes.join(", ")}`;
-        penaBase -= 1;
-        if (penaBase < 0) penaBase = 0;
-        relatorio += `\n-1 ano → ${anosEmAnosEMeses(penaBase)}`;
+        relatorio += `\n✅ Atenuantes: ${atenuantes.join(', ')}\n`;
+        penaBase -= penaBase * 1/6 * atenuantes.length;
       }
 
-      // Aumentos
-      const aumentos = Array.from(
-        document.querySelectorAll(".checkbox-group:nth-of-type(3) input:checked")
-      ).map((e) => e.value);
-      if (aumentos.length) {
-        const { pena, explicacoes } = aplicarFatores(penaBase, aumentos, "aumento");
-        relatorio += `\n\n🔸 Causas de Aumento:\n${explicacoes.join("\n")}`;
-        penaBase = pena;
+      // Causas de aumento
+      const causasAumento = Array.from(document.querySelectorAll('.checkbox-group:nth-child(6) input:checked')).map(c => c.value);
+      if (causasAumento.length) {
+        relatorio += `\n⬆️ Causas de aumento: ${causasAumento.join(', ')}\n`;
+        causasAumento.forEach(f => {
+          const frac = parseFraction(f);
+          penaBase += penaBase * frac;
+        });
       }
 
-      // Reduções
-      const reducoes = Array.from(
-        document.querySelectorAll(".checkbox-group:nth-of-type(4) input:checked")
-      ).map((e) => e.value);
-      if (reducoes.length) {
-        const { pena, explicacoes } = aplicarFatores(penaBase, reducoes, "reducao");
-        relatorio += `\n\n🔸 Causas de Redução:\n${explicacoes.join("\n")}`;
-        penaBase = pena;
+      // Causas de redução
+      const causasReducao = Array.from(document.querySelectorAll('.checkbox-group:nth-child(7) input:checked')).map(c => c.value);
+      if (causasReducao.length) {
+        relatorio += `\n⬇️ Causas de redução: ${causasReducao.join(', ')}\n`;
+        causasReducao.forEach(f => {
+          const frac = parseFraction(f);
+          penaBase -= penaBase * frac;
+        });
       }
 
       // Hediondo
-      if (hediondo === "sim") {
-        relatorio +=
-          `\n\n🔒 Crime Hediondo: sim\n⚠️ Regime inicial: fechado, sem liberdade provisória (Lei 8.072/90)`;
+      if (hediondo === 'sim') {
+        relatorio += `\n☠️ Crime hediondo: Limite máximo de 30 anos.\n`;
+        if (penaBase > 30) penaBase = 30;
       }
 
       // Circunstâncias gerais
       if (favoravel) {
-        const reducao = penaBase * (1 / 6);
-        penaBase -= reducao;
-        relatorio += `\n\n✅ Circunstâncias Favoráveis → Redução de 1/6 → -${anosEmAnosEMeses(
-          reducao
-        )} → ${anosEmAnosEMeses(penaBase)}`;
+        relatorio += `\n🎯 Circunstância geral favorável (-1/6).\n`;
+        penaBase -= penaBase * (1/6);
       }
       if (desfavoravel) {
-        const aumento = penaBase * (1 / 6);
-        penaBase += aumento;
-        relatorio += `\n\n❌ Circunstâncias Desfavoráveis → Aumento de 1/6 → +${anosEmAnosEMeses(
-          aumento
-        )} → ${anosEmAnosEMeses(penaBase)}`;
+        relatorio += `\n⚡ Circunstância geral desfavorável (+1/6).\n`;
+        penaBase += penaBase * (1/6);
       }
 
-      // Máximo legal
-      if (!isNaN(maximo) && penaBase > maximo) {
-        relatorio += `\n\n⚠️ Pena excede o máximo legal (${anosEmAnosEMeses(maximo)}), ajustando...`;
-        penaBase = maximo;
+      // Limitar pela pena máxima legal
+      if (penaBase > maximo) penaBase = maximo;
+
+      relatorio += `\n🧮 Pena final calculada: ${anosEMeses(penaBase)}\n`;
+
+      // Exibir no resultado
+      document.getElementById('resultado').textContent = relatorio;
+    }
+
+    function parseFraction(fracStr) {
+      const parts = fracStr.split('/');
+      if (parts.length === 2) {
+        return parseFloat(parts[0]) / parseFloat(parts[1]);
       }
-
-      relatorio += `\n\n✅ Pena Final: ${anosEmAnosEMeses(penaBase)}`;
-
-      document.getElementById("resultado").textContent = relatorio;
+      return 0;
     }
 
     function copiarRelatorio() {
-      const resultado = document.getElementById("resultado").textContent;
-      navigator.clipboard.writeText(resultado).then(() => {
-        alert("Relatório copiado!");
+      const texto = document.getElementById('resultado').textContent;
+      if (!texto) return alert("Nenhum resultado para copiar.");
+      navigator.clipboard.writeText(texto).then(() => {
+        alert("Relatório copiado para a área de transferência!");
       });
     }
   </script>
